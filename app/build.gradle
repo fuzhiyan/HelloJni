@@ -1,0 +1,89 @@
+apply plugin: 'com.android.model.application'
+
+model {
+    android {
+        compileSdkVersion = 22
+        buildToolsVersion = "22.0.1"
+
+        defaultConfig.with {
+            applicationId = "net.thdev.hellojni"
+            minSdkVersion.apiLevel = 22
+            targetSdkVersion.apiLevel = 22
+            versionCode = 1
+            versionName = "1.0.0"
+        }
+
+        allprojects {
+            sourceCompatibility = 1.7
+            targetCompatibility = 1.7
+        }
+    }
+
+    /*
+     * native build settings
+     */
+    android.ndk {
+        moduleName = "jni-example"
+        /*
+         * Other ndk flags configurable here are
+         * cppFlags += "-fno-rtti"
+         * cppFlags += "-fno-exceptions"
+         * ldLibs    = ["android", "log"]
+         * stl       = "system"
+         */
+    }
+
+    android.buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles += file('proguard-rules.txt')
+        }
+    }
+
+    android.productFlavors {
+        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
+        // https://developer.android.com/ndk/guides/abis.html#sa
+        create("arm") {
+            ndk.with {
+                ndk.abiFilters += "armeabi"
+            }
+        }
+        create("arm7") {
+            ndk.with {
+                ndk.abiFilters += "armeabi-v7a"
+            }
+        }
+        create("arm8") {
+            ndk.with {
+                ndk.abiFilters += "arm64-v8a"
+            }
+        }
+        create("x86") {
+            ndk.with {
+                ndk.abiFilters += "x86"
+            }
+        }
+        create("x86-64") {
+            ndk.with {
+                ndk.abiFilters += "x86_64"
+            }
+        }
+        create("mips") {
+            ndk.with {
+                ndk.abiFilters += "mips"
+            }
+        }
+        create("mips-64") {
+            ndk.with {
+                ndk.abiFilters += "mips64"
+            }
+        }
+        // To include all cpu architectures, leaves abiFilters empty
+        create("all")
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.2.1'
+}
